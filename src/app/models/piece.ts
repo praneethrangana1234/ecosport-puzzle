@@ -3,8 +3,10 @@ export interface Piece {
   image: string;
   correctIndex: number;
   currentIndex: number;
-  x: number;      // Must be number
-  y: number;      // Must be number
-  width: number;  // Must be number
-  height: number; // Must be number
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  pctX?: number; // මේක අනිවාර්යයෙන්ම එකතු කරන්න
+  pctY?: number; // මේකත් එකතු කරන්න
 }

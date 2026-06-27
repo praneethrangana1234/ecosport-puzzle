@@ -21,11 +21,12 @@
       (click)="pieceClicked(i)"
       [class.selected]="selectedPCIndex === i">
 
+      
       <div
-        class="piece-image"
-        [style.backgroundImage]="'url(' + piece.image + ')'"
-        [style.backgroundPosition]="'-' + piece.x + 'px -' + piece.y + 'px'">
-      </div>
+  class="piece-image"
+  [style.backgroundImage]="'url(' + piece.image + ')'"
+  [style.backgroundPosition]="piece.pctX + '% ' + piece.pctY + '%'">
+</div>
 
     </div>
 

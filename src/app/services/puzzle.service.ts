@@ -11,47 +11,46 @@ export class PuzzleService {
 
   constructor() { }
 
+ 
+ 
+ 
   createPieces(image: string): Piece[] {
+  const pieces: Piece[] = [];
+  let id = 0;
 
-    const pieces: Piece[] = [];
+  for (let row = 0; row < this.GRID_SIZE; row++) {
+    for (let col = 0; col < this.GRID_SIZE; col++) {
+      
+      const percentX = Math.round((col / (this.GRID_SIZE - 1)) * 100 * 100) / 100;
+      const percentY = Math.round((row / (this.GRID_SIZE - 1)) * 100 * 100) / 100;
 
-    let id = 0;
-
-    for (let row = 0; row < this.GRID_SIZE; row++) {
-
-      for (let col = 0; col < this.GRID_SIZE; col++) {
-
-        pieces.push({
-
-          id: id,
-
-          image: image,
-
-          correctIndex: id,
-
-          currentIndex: id,
-
-          x: col * this.PIECE_SIZE,
-
-          y: row * this.PIECE_SIZE,
-
-          width: this.PIECE_SIZE,
-
-          height: this.PIECE_SIZE
-
-        });
-
-        id++;
-
-      }
-
+      pieces.push({
+        id: id,
+        image: image,
+        correctIndex: id,
+        currentIndex: id,
+        x: col * this.PIECE_SIZE, // PC එක වෙනුවෙන් pixels එහෙම්මම තිව්වා
+        y: row * this.PIECE_SIZE,
+        width: this.PIECE_SIZE,
+        height: this.PIECE_SIZE,
+        pctX: percentX, // Mobile එක වෙනුවෙන් percentages දුන්නා
+        pctY: percentY
+      });
+      
+      id++;
     }
-
-    this.shuffle(pieces);
-
-    return pieces;
-
   }
+
+  this.shuffle(pieces);
+  return pieces;
+}
+
+// 4x4 grid එකක කෑලි 16 background position එක percentage වලින් හදන හැටි
+
+
+
+
+
 
   shuffle(pieces: Piece[]): void {
 

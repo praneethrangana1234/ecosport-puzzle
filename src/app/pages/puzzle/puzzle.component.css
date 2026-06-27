@@ -1,191 +1,102 @@
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-.container{
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-
-    margin-top:20px;
-
-    font-family:Arial,Helvetica,sans-serif;
-
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-h1{
-
-    color:#f5b400;
-
-    margin-bottom:15px;
-
+h1 {
+    color: #f5b400;
+    margin-bottom: 15px;
 }
 
-.timer{
-
-    font-size:22px;
-
-    font-weight:bold;
-
-    margin-bottom:20px;
-
-    color:#333;
-
+.timer {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
 }
 
-.board{
-
-    width:408px;
-
-    height:408px;
-
-    display:grid;
-
-    grid-template-columns:repeat(4,100px);
-
-    grid-template-rows:repeat(4,100px);
-
-    gap:2px;
-
-    background:#222;
-
-    border:4px solid orange;
-
-    border-radius:8px;
-
-    padding:2px;
-
+/* Board එක responsive කලා. PC එකේදී උපරිම 408px වෙනවා, mobile එකේදී screen එකට හැඩගැහෙනවා */
+.board {
+    width: 100%;
+    max-width: 408px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* තීරුවලට සමානව බෙදෙන්න 1fr */
+    grid-template-rows: repeat(4, 1fr);
+    gap: 2px;
+    background: #222;
+    border: 4px solid orange;
+    border-radius: 8px;
+    padding: 2px;
 }
 
-.piece{
-
-    width:100px;
-
-    height:100px;
-
-    cursor:move;
-
-    user-select:none;
-
-    touch-action:none;
-
+.piece {
+    width: 100%;
+    height: 100%;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
 }
 
-.piece-image{
-
-    width:100%;
-
-    height:100%;
-
-    background-size:400px 400px;
-
-    background-repeat:no-repeat;
-
-    border:1px solid #fff;
-
+.piece-image {
+    width: 100%;
+    height: 100%;
+    background-size: 400% 400%; /* Image එක 4x4 ග්‍රිඩ් එකක් නිසා 400% ක් විශාල කරනවා */
+    background-repeat: no-repeat;
+    border: 1px solid #fff;
 }
 
-.cdk-drag-preview{
-
-    box-shadow:0 8px 18px rgba(0,0,0,.4);
-
-    border:2px solid gold;
-
+.cdk-drag-preview {
+    box-shadow: 0 8px 18px rgba(0,0,0,.4);
+    border: 2px solid gold;
 }
 
-.cdk-drag-placeholder{
-
-    opacity:.25;
-
+.cdk-drag-placeholder {
+    opacity: .25;
 }
 
-.cdk-drag-animating{
-
-    transition:transform .2s;
-
+.cdk-drag-animating {
+    transition: transform .2s;
 }
 
-.board.cdk-drop-list-dragging .piece:not(.cdk-drag-placeholder){
-
-    transition:transform .2s;
-
+.board.cdk-drop-list-dragging .piece:not(.cdk-drag-placeholder) {
+    transition: transform .2s;
 }
 
-.restart{
-
-    margin-top:20px;
-
-    padding:12px 30px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:gold;
-
-    font-size:18px;
-
-    cursor:pointer;
-
+.restart {
+    margin-top: 20px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    background: gold;
+    font-size: 18px;
+    cursor: pointer;
 }
 
-.restart:hover{
-
-    background:orange;
-
+.restart:hover {
+    background: orange;
 }
 
-.winner{
-
-    margin-top:20px;
-
-    font-size:28px;
-
-    color:gold;
-
-    font-weight:bold;
-
+.winner {
+    margin-top: 20px;
+    font-size: 28px;
+    color: gold;
+    font-weight: bold;
 }
 
-@media(max-width:500px){
-
-.board{
-
-    width:328px;
-
-    height:328px;
-
-    grid-template-columns:repeat(4,80px);
-
-    grid-template-rows:repeat(4,80px);
-
-}
-
-.piece{
-
-    width:80px;
-
-    height:80px;
-
-}
-
-.piece-image{
-
-    background-size:320px 320px;
-
-}
-
-h1{
-
-    font-size:24px;
-
-}
-
-.timer{
-
-    font-size:18px;
-
-}
-
+/* Mobile Media Query එක ගොඩක් සරල කලා (ප්‍රමාණ අතින් වෙනස් කරන්න ඕනෙම නැහැ) */
+@media(max-width: 500px) {
+    h1 {
+        font-size: 24px;
+    }
+    .timer {
+        font-size: 18px;
+    }
 }
