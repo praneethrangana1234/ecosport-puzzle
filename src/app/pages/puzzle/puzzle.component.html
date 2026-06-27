@@ -1,0 +1,43 @@
+
+
+<div class="container">
+
+    <h1>EcoSport Media Puzzle</h1>
+
+    <div class="timer">
+        Time : {{minutes}}:{{seconds}}
+    </div>
+
+    <div class="board">
+
+        <div
+    *ngFor="let piece of pieces"
+
+    class="piece"
+
+    [class.dragging]="piece.isDragging"
+
+    [style.backgroundImage]="'url('+piece.image+')'"
+
+    [style.backgroundPosition]="
+        '-' + piece.x + 'px ' +
+        '-' + piece.y + 'px'"
+
+    (pointerdown)="pointerDown($event,piece)"
+    (pointerup)="pointerUp(piece)"
+    (pointerleave)="pointerLeave(piece)">
+</div>
+
+    </div>
+
+    <button class="restart" (click)="restart()">
+        Restart
+    </button>
+
+    <div class="winner" *ngIf="completed">
+
+        🥇 Gold Badge Achieved!
+
+    </div>
+
+</div>

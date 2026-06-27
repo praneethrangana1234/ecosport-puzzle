@@ -1,7 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [];
+import { PuzzleComponent } from './pages/puzzle/puzzle.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: PuzzleComponent
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
