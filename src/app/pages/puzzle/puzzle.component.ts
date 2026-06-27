@@ -21,8 +21,8 @@ export class PuzzleComponent implements OnInit, OnDestroy {
   completed = false;
 
   // Trackers
-  dragIndex = -1;       // Dedicated for Mobile Drag
-  selectedPCIndex = -1; // Dedicated for PC Clicks
+  dragIndex = -1;       // Mobile Drag Source
+  selectedPCIndex = -1; // PC Click Source
 
   constructor(private puzzleService: PuzzleService) { }
 
@@ -53,44 +53,57 @@ export class PuzzleComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // --- MOBILE ONLY: DRAG AND DROP ---
+  // --- MOBILE: DRAG AND DROP ---
   dragStart(index: number): void {
     this.dragIndex = index;
   }
 
   drop(event: CdkDragDrop<Piece[]>): void {
-    const dropIndex = event.currentIndex;
+    // Get the exact element where the finger/mouse was released
+    const dropElement = document.elementFromPoint(
+      event.dropPoint.x,
+      event.dropPoint.y
+    );
 
-    if (this.dragIndex === -1 || this.dragIndex === dropIndex) {
+    if (!dropElement) {
       this.dragIndex = -1;
       return;
     }
 
-    // Swap the dragged piece and dropped target piece
-    this.puzzleService.swap(this.pieces, this.dragIndex, dropIndex);
-
-    // Reset drag tracker & verify state
-    this.dragIndex = -1;
-    this.checkWin();
-  }
-
-  // --- PC ONLY: CLICK PROCESS TO SWAP ---
-  pieceClicked(index: number): void {
-    // If a mobile drag event just occurred, reset and skip click execution
-    if (this.dragIndex !== -1) {
+    // Find the closest puzzle piece element that contains the index
+    const pieceElement = dropElement.closest('.piece');
+    if (!pieceElement) {
+      this.dragIndex = -1;
       return;
     }
 
+    // Find what position index this element holds in the current array
+    const allPieces = Array.from(document.querySelectorAll('.piece'));
+    const dropIndex = allPieces.indexOf(pieceElement);
+
+    if (this.dragIndex !== -1 && dropIndex !== -1 && this.dragIndex !== dropIndex) {
+      // Direct 2-piece swap using your Service
+      this.puzzleService.swap(this.pieces, this.dragIndex, dropIndex);
+      this.checkWin();
+    }
+
+    this.dragIndex = -1;
+  }
+
+  // --- PC: CLICK TO SWAP ---
+  pieceClicked(index: number): void {
+    // If a mobile drag happened, ignore clicks
+    if (this.dragIndex !== -1) return;
+
     if (this.selectedPCIndex === -1) {
-      // First click: Highlight selected piece
-      this.selectedPCIndex = index;
+      this.selectedPCIndex = index; // Select first piece
     } else {
-      // Second click: Swap them if they are different items
       if (this.selectedPCIndex !== index) {
+        // Direct 2-piece swap using your Service
         this.puzzleService.swap(this.pieces, this.selectedPCIndex, index);
         this.checkWin();
       }
-      this.selectedPCIndex = -1; // Clear selection highlight
+      this.selectedPCIndex = -1; // Reset selection
     }
   }
 
