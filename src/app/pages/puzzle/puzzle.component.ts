@@ -1,142 +1,111 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PuzzleService } from '../../services/puzzle.service';
 import { Piece } from '../../models/piece';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-puzzle',
   templateUrl: './puzzle.component.html',
   styleUrls: ['./puzzle.component.css']
 })
-export class PuzzleComponent implements OnInit {
+export class PuzzleComponent implements OnInit, OnDestroy {
 
   pieces: Piece[] = [];
 
-  dragPiece: Piece | null = null;
-
-  dragIndex = -1;
+  // Timer
+  minutes = '00';
+  seconds = '00';
+  private timer: any;
+  private totalSeconds = 0;
 
   completed = false;
 
-  minutes = '00';
-  seconds = '00';
-
-  private totalSeconds = 0;
-
-  private timer: any;
+  // Trackers
+  dragIndex = -1;       // Dedicated for Mobile Drag
+  selectedPCIndex = -1; // Dedicated for PC Clicks
 
   constructor(private puzzleService: PuzzleService) { }
 
   ngOnInit(): void {
-
     this.restart();
-
   }
 
-  restart() {
-
-    this.completed = false;
-
-    this.totalSeconds = 0;
-
+  restart(): void {
     clearInterval(this.timer);
-
+    this.completed = false;
+    this.totalSeconds = 0;
     this.minutes = '00';
     this.seconds = '00';
+    this.dragIndex = -1;
+    this.selectedPCIndex = -1;
 
     this.pieces = this.puzzleService.createPieces('assets/player.jpg');
-
     this.startTimer();
-
   }
 
-  startTimer() {
-
+  private startTimer(): void {
     this.timer = setInterval(() => {
-
       this.totalSeconds++;
-
       const min = Math.floor(this.totalSeconds / 60);
-
       const sec = this.totalSeconds % 60;
-
       this.minutes = min.toString().padStart(2, '0');
-
       this.seconds = sec.toString().padStart(2, '0');
-
     }, 1000);
-
   }
 
-  pointerDown(event: PointerEvent, piece: Piece) {
-
-    if (this.completed) return;
-
-    this.dragPiece = piece;
-
-    this.dragPiece.isDragging = true;
-
-    this.dragIndex = this.pieces.indexOf(piece);
-
+  // --- MOBILE ONLY: DRAG AND DROP ---
+  dragStart(index: number): void {
+    this.dragIndex = index;
   }
 
-  pointerLeave(piece: Piece) {
+  drop(event: CdkDragDrop<Piece[]>): void {
+    const dropIndex = event.currentIndex;
 
-    // Will be used in Part 2
-
-  }
-    @HostListener('window:pointermove', ['$event'])
-  pointerMove(event: PointerEvent) {
-
-    if (!this.dragPiece) {
+    if (this.dragIndex === -1 || this.dragIndex === dropIndex) {
+      this.dragIndex = -1;
       return;
     }
 
-    // Optional: visual feedback while dragging.
-    // We'll improve this animation later.
+    // Swap the dragged piece and dropped target piece
+    this.puzzleService.swap(this.pieces, this.dragIndex, dropIndex);
 
-  }
-
-  pointerUp(piece?: Piece) {
-
-    if (!this.dragPiece) {
-      return;
-    }
-
-    this.dragPiece.isDragging = false;
-
-    // If released over another piece, swap them.
-    if (piece && piece !== this.dragPiece) {
-
-      const from = this.dragIndex;
-      const to = this.pieces.indexOf(piece);
-
-      this.puzzleService.swapPieces(this.pieces, from, to);
-
-    }
-
-    this.dragPiece = null;
+    // Reset drag tracker & verify state
     this.dragIndex = -1;
-
     this.checkWin();
-
   }
 
-  checkWin() {
-
-    if (this.puzzleService.isCompleted(this.pieces)) {
-
-      this.completed = true;
-
-      clearInterval(this.timer);
-
-      setTimeout(() => {
-
-        alert('🏆 Congratulations!\n\nYou earned the Gold Badge!');
-
-      }, 300);
-
+  // --- PC ONLY: CLICK PROCESS TO SWAP ---
+  pieceClicked(index: number): void {
+    // If a mobile drag event just occurred, reset and skip click execution
+    if (this.dragIndex !== -1) {
+      return;
     }
 
+    if (this.selectedPCIndex === -1) {
+      // First click: Highlight selected piece
+      this.selectedPCIndex = index;
+    } else {
+      // Second click: Swap them if they are different items
+      if (this.selectedPCIndex !== index) {
+        this.puzzleService.swap(this.pieces, this.selectedPCIndex, index);
+        this.checkWin();
+      }
+      this.selectedPCIndex = -1; // Clear selection highlight
+    }
   }
 
+  private checkWin(): void {
+    this.completed = this.puzzleService.isCompleted(this.pieces);
+
+    if (this.completed) {
+      clearInterval(this.timer);
+      setTimeout(() => {
+        alert('🏆 Congratulations!\n\n🥇 Gold Badge Achieved!');
+      }, 300);
+    }
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.timer);
+  }
 }

@@ -16,6 +16,7 @@ import { PuzzleComponent } from './pages/puzzle/puzzle.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+     DragDropModule
    
   ],
   bootstrap: [AppComponent]

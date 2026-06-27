@@ -6,19 +6,20 @@ import { Piece } from '../models/piece';
 })
 export class PuzzleService {
 
+  readonly GRID_SIZE = 4;
+  readonly PIECE_SIZE = 100;
+
   constructor() { }
 
   createPieces(image: string): Piece[] {
 
     const pieces: Piece[] = [];
 
-    const pieceSize = 100;
     let id = 0;
 
-    // Create 16 pieces (4 x 4)
-    for (let row = 0; row < 4; row++) {
+    for (let row = 0; row < this.GRID_SIZE; row++) {
 
-      for (let col = 0; col < 4; col++) {
+      for (let col = 0; col < this.GRID_SIZE; col++) {
 
         pieces.push({
 
@@ -30,17 +31,13 @@ export class PuzzleService {
 
           currentIndex: id,
 
-          x: col * pieceSize,
+          x: col * this.PIECE_SIZE,
 
-          y: row * pieceSize,
+          y: row * this.PIECE_SIZE,
 
-          width: pieceSize,
+          width: this.PIECE_SIZE,
 
-          height: pieceSize,
-
-          isDragging: false,
-
-          locked: false
+          height: this.PIECE_SIZE
 
         });
 
@@ -50,46 +47,54 @@ export class PuzzleService {
 
     }
 
-    // Shuffle puzzle
     this.shuffle(pieces);
-
-    // Update current positions
-    pieces.forEach((piece, index) => {
-      piece.currentIndex = index;
-    });
 
     return pieces;
 
   }
 
-  shuffle(array: Piece[]): void {
+  shuffle(pieces: Piece[]): void {
 
-    for (let i = array.length - 1; i > 0; i--) {
+    // Fisher-Yates shuffle
+    for (let i = pieces.length - 1; i > 0; i--) {
 
       const j = Math.floor(Math.random() * (i + 1));
 
-      [array[i], array[j]] = [array[j], array[i]];
+      [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
 
     }
 
+    // Update current indexes
+    pieces.forEach((piece, index) => {
+
+      piece.currentIndex = index;
+
+    });
+
   }
 
-  swapPieces(pieces: Piece[], first: number, second: number): void {
+  swap(pieces: Piece[], firstIndex: number, secondIndex: number): void {
 
-    const temp = pieces[first];
+    const temp = pieces[firstIndex];
 
-    pieces[first] = pieces[second];
+    pieces[firstIndex] = pieces[secondIndex];
 
-    pieces[second] = temp;
+    pieces[secondIndex] = temp;
 
-    pieces[first].currentIndex = first;
-    pieces[second].currentIndex = second;
+    // Refresh current indexes
+    pieces.forEach((piece, index) => {
+
+      piece.currentIndex = index;
+
+    });
 
   }
 
   isCompleted(pieces: Piece[]): boolean {
 
-    return pieces.every(piece => piece.correctIndex === piece.currentIndex);
+    return pieces.every(piece =>
+      piece.correctIndex === piece.currentIndex
+    );
 
   }
 
