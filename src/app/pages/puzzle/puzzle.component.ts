@@ -140,7 +140,7 @@ restart(): void {
     if (this.completed) {
       clearInterval(this.timer);
       setTimeout(() => {
-        alert('🏆 Congratulations!\n\n🥇 Gold Badge Achieved!');
+       // alert('🏆 Congratulations!\n\n🥇 Gold Badge Achieved!');
       }, 300);
     }
   }
