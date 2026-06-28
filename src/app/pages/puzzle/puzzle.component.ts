@@ -11,6 +11,9 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 export class PuzzleComponent implements OnInit, OnDestroy {
 
   pieces: Piece[] = [];
+currentImage: string = 'https://lh3.googleusercontent.com/d/1Id7t4DNstWuoPrJj9dBatf01EXv-4DiO';
+
+
 
   // Timer
   minutes = '00';
@@ -30,18 +33,42 @@ export class PuzzleComponent implements OnInit, OnDestroy {
     this.restart();
   }
 
-  restart(): void {
-    clearInterval(this.timer);
-    this.completed = false;
-    this.totalSeconds = 0;
-    this.minutes = '00';
-    this.seconds = '00';
-    this.dragIndex = -1;
-    this.selectedPCIndex = -1;
+  //restart(): void {
+   // clearInterval(this.timer);
+   // this.completed = false;
+    //this.totalSeconds = 0;
+    //this.minutes = '00';
+   // this.seconds = '00';
+   // this.dragIndex = -1;
+   // this.selectedPCIndex = -1;
 
-    this.pieces = this.puzzleService.createPieces('assets/player.jpg');
-    this.startTimer();
-  }
+    //this.pieces = this.puzzleService.createPieces('assets/player.jpg');
+    //this.pieces = this.puzzleService.createPieces(this.currentImage);
+
+    
+   
+   // this.startTimer();
+ // }
+
+restart(): void {
+  clearInterval(this.timer);
+  this.completed = false;
+  this.totalSeconds = 0;
+  this.minutes = '00';
+  this.seconds = '00';
+  this.dragIndex = -1;
+  this.selectedPCIndex = -1;
+
+  // ⚡ මෙන්න මෙතනදී තමයි ලින්ක් එක අගට dynamic වෙලාව සෙට් කරන්නේ
+  const cacheBusterImage = this.currentImage + '?t=' + new Date().getTime();
+  
+  // සර්විස් එකට පාස් කරන්නේ අර සකස් කරපු අලුත් ලින්ක් එක
+  this.pieces = this.puzzleService.createPieces(cacheBusterImage);
+  
+  this.startTimer();
+}
+
+
 
   private startTimer(): void {
     this.timer = setInterval(() => {
